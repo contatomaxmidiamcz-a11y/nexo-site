@@ -28,3 +28,9 @@ No `index.html`, procure o bloco `nexo-config` e troque só os endereços entre 
 - Ative a verificação em duas etapas (2FA) no GitHub e na conta onde o DNS do domínio é gerenciado.
 - Mantenha o domínio verificado no GitHub (Settings do perfil › Pages) para evitar que outra conta o use.
 - Em Settings › Pages deste repositório, deixe **Enforce HTTPS** marcado.
+
+## Google e compartilhamento
+
+- `robots.txt` e `sitemap.xml` indicam a página ao Google. Ao mudar a página, atualize a data em `<lastmod>` no `sitemap.xml`.
+- `og-image.png` é a imagem de prévia quando o link é compartilhado (WhatsApp, redes sociais).
+- Se o preço mudar, atualize também a descrição (`meta name="description"`), as tags `og:description` e o bloco `application/ld+json` no `index.html`.
