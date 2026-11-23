@@ -295,6 +295,8 @@ footer{background:#0C0C0C;color:var(--on-dark-muted);font-size:14.5px;padding:40
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;align-items:center}
 footer a{color:var(--on-dark)}
 footer .brand{font-size:18px}
+footer .by{display:flex;align-items:center;gap:8px}
+footer .by img{height:16px;width:auto;opacity:.9}
 
 
 /* ===== Transição entre seções (troca de "página") ===== */
