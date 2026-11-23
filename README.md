@@ -10,6 +10,7 @@ Landing page do Nexo, assistente pessoal no WhatsApp. Publicada pelo GitHub Page
 | `assets/styles.css` | Visual: cores, fontes, espaçamentos, animações em CSS. |
 | `assets/app.js` | Comportamento: cena da primeira tela, demonstrações, planos, dúvidas, transições. |
 | `assets/boot.js` | Roda antes de a página aparecer (ativa as animações e bloqueia exibição dentro de outros sites). |
+| `assets/vendor/lenis.min.js` | Rolagem suave da roda do mouse e do trackpad ([Lenis](https://github.com/darkroom-engineering/lenis) 1.3.23, licença MIT em `LENIS-LICENSE.txt`). Configuração em `assets/app.js` (`lerp: 0.15`). Desligada para quem prefere menos movimento. |
 | `assets/logo.webp`, `assets/favicon.png` | Logotipo e ícone da aba. |
 | `og-image.png` | Imagem de prévia quando o link é compartilhado (WhatsApp, redes sociais). |
 | `robots.txt`, `sitemap.xml` | Informações para o Google. |

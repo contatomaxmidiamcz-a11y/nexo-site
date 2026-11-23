@@ -351,6 +351,13 @@ section[tabindex]:focus{outline:none}
 .in.kicker::before,.hero .kicker::before{width:22px}
 
 
+/* ===== Rolagem suave (Lenis, mesma configuração da Pierre) ===== */
+html.lenis,html.lenis body{height:auto}
+html.lenis{scroll-behavior:auto}
+.lenis:not(.lenis-autoToggle).lenis-stopped{overflow:clip}
+.lenis [data-lenis-prevent],.lenis [data-lenis-prevent-wheel],.lenis [data-lenis-prevent-touch]{overscroll-behavior:contain}
+.lenis.lenis-smooth iframe{pointer-events:none}
+
 /* ===== Movimento inspirado na Pierre ===== */
 /* 1. Abertura em cascata: sobe e aparece (0,8 s, curva que desacelera no fim) */
 @keyframes nexoFadeUp{from{opacity:0;transform:translateY(var(--fu-y,32px))}to{opacity:1;transform:none}}

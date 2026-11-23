@@ -6,6 +6,15 @@
   const reduced = () => RM.matches;
   const EASE = "cubic-bezier(.22,.8,.24,1)";
   const wait = ms => new Promise(r => setTimeout(r, ms));
+  /* --- Rolagem suave igual à da Pierre: Lenis 1.3.23, lerp 0.15 (desligada com movimento reduzido) --- */
+  let lenis = null;
+  if (window.Lenis && !reduced()) {
+    try {
+      lenis = new Lenis({autoRaf: true, autoResize: true, smoothWheel: true, lerp: 0.15});
+      const refresh = () => { try { lenis.resize(); } catch(e){} };
+      addEventListener("load", () => { refresh(); setTimeout(refresh, 300); setTimeout(refresh, 1000); });
+    } catch(e) { lenis = null; }
+  }
   const brl = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 
   /* --- Pagamento ---
@@ -426,10 +435,12 @@
   let navAnim = null;
   function stopNav(){
     if (!navAnim) return;
-    cancelAnimationFrame(navAnim.raf); navAnim = null; navLock = false;
+    if (navAnim.lenis) { try { if (typeof lenis.reset === "function") lenis.reset(); else { lenis.stop(); lenis.start(); } } catch(e){} }
+    else cancelAnimationFrame(navAnim.raf);
+    navAnim = null; navLock = false;
     document.documentElement.style.scrollBehavior = "";
   }
-  ["wheel","touchstart","keydown","mousedown"].forEach(ev => addEventListener(ev, stopNav, {passive:true}));
+  ["wheel","touchstart","keydown","mousedown"].forEach(ev => addEventListener(ev, stopNav, {passive: true, capture: true}));
   function sectionTop(el){
     if (el.id === "inicio") return 0;
     // Usa a altura atual do cabeçalho: ele encolhe ao rolar e puxa a página junto,
@@ -444,8 +455,15 @@
     if (reduced() || Math.abs(dist) < 2) { scrollTo(0, y); html.style.scrollBehavior = ""; return; }
     const dur = Math.min(900, Math.max(420, Math.abs(dist) * 0.35));
     const ease = p => p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2;
-    const t0 = performance.now();
     navLock = true; top.classList.remove("hide");
+    if (lenis) {                                   // com a Lenis, ela mesma conduz a rolagem dos links
+      navAnim = {lenis: true};
+      lenis.scrollTo(y, {duration: dur / 1000, easing: ease, force: true, onComplete: () => {
+        navAnim = null; html.style.scrollBehavior = ""; lastY = scrollY; setTimeout(() => { navLock = false; }, 80);
+      }});
+      return;
+    }
+    const t0 = performance.now();
     const step = now => {
       if (!navAnim) return;
       const p = Math.min(1, (now - t0) / dur);
