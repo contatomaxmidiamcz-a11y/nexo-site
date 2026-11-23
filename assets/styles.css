@@ -350,8 +350,33 @@ section[tabindex]:focus{outline:none}
 .kicker::before{content:"";width:0;height:2px;border-radius:2px;background:var(--green);transition:width .4s var(--ease) .1s}
 .in.kicker::before,.hero .kicker::before{width:22px}
 
+
+/* ===== Movimento inspirado na Pierre ===== */
+/* 1. Abertura em cascata: sobe e aparece (0,8 s, curva que desacelera no fim) */
+@keyframes nexoFadeUp{from{opacity:0;transform:translateY(var(--fu-y,32px))}to{opacity:1;transform:none}}
+.js .hero .eyebrow,.js .hero h1 > span,.js .hero h1 em > span,.js .hero .lead,.js .hero .actions,.js .hero .micro,.js .hero-demo{
+  animation:nexoFadeUp .8s cubic-bezier(.33,1,.68,1) var(--fu-d,0s) both}
+.js .hero .eyebrow{--fu-d:.05s;--fu-y:16px}
+.js .hero h1 > span:nth-of-type(1){--fu-d:.12s}
+.js .hero h1 > span:nth-of-type(2){--fu-d:.2s}
+.js .hero h1 em > span:nth-of-type(1){--fu-d:.28s}
+.js .hero h1 em > span:nth-of-type(2){--fu-d:.36s}
+.js .hero .lead{--fu-d:.42s;--fu-y:24px}
+.js .hero .actions{--fu-d:.5s;--fu-y:20px}
+.js .hero .micro{--fu-d:.58s;--fu-y:16px}
+.js .hero-demo{--fu-d:.36s;--fu-y:48px}
+/* 2. Cabeçalho recolhe ao rolar para baixo e volta ao rolar para cima */
+.top{transition:transform .4s ease}
+.top.hide{transform:translateY(-100%)}
+.top:focus-within{transform:none}
+/* 3. Linha dos links do menu: nasce da esquerda, recolhe para a direita */
+.nav a::after{transform-origin:right;transition:transform .3s cubic-bezier(.25,.46,.45,.94)}
+.nav a:hover::after{transform:scaleX(1);transform-origin:left}
+
 @media (prefers-reduced-motion:reduce){
   .js [data-reveal]{opacity:1;translate:none;scale:none}
+  .js .hero .eyebrow,.js .hero h1 > span,.js .hero h1 em > span,.js .hero .lead,.js .hero .actions,.js .hero .micro,.js .hero-demo{animation:none!important}
+  .top.hide{transform:none}
   .tilt{transform:none}
   .btn{transform:none}
   .kicker::before{width:22px}

@@ -128,7 +128,9 @@
   $("#h-replay").addEventListener("click", playHero);
   if ("IntersectionObserver" in window) {
     // Começa quando a conversa e a ficha estão na tela
-    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); playHero(); } }, {threshold:.8});
+    // Espera o bloco terminar de entrar (abertura em cascata) antes de tocar a cena
+    const entrance = () => Promise.all((hero.getAnimations ? hero.getAnimations() : []).filter(a => a.animationName === "nexoFadeUp").map(a => a.finished.catch(() => {})));
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); entrance().then(playHero); } }, {threshold:.8});
     io.observe($("#h-result"));
   } else playHero();
 
@@ -359,11 +361,11 @@
       if (!d.open) {
         d.open = true;
         const h = a.scrollHeight;
-        d._an = a.animate([{height:"0px", opacity:0},{height:h + "px", opacity:1}], {duration:280, easing:EASE});
+        d._an = a.animate([{height:"0px", opacity:0},{height:h + "px", opacity:1}], {duration:300, easing:"cubic-bezier(.45,0,.55,1)"});
         d._an.onfinish = () => { d._an = null; };
       } else {
         const h = a.offsetHeight;
-        d._an = a.animate([{height:h + "px", opacity:1},{height:"0px", opacity:0}], {duration:220, easing:EASE});
+        d._an = a.animate([{height:h + "px", opacity:1},{height:"0px", opacity:0}], {duration:260, easing:"cubic-bezier(.45,0,.55,1)"});
         d._an.onfinish = () => { d.open = false; d._an = null; };
       }
     });
@@ -391,12 +393,19 @@
   // Cabeçalho: barra de progresso, modo compacto e seção ativa
   const top = $("#top"), prog = $("#progress");
   let ticking = false;
+  let lastY = scrollY, navLock = false;   // navLock: rolagem feita pelos links do próprio site
   function onScroll(){
     if (ticking) return; ticking = true;
     requestAnimationFrame(() => {
-      const max = document.documentElement.scrollHeight - innerHeight;
-      prog.style.transform = "scaleX(" + (max > 0 ? scrollY / max : 0) + ")";
-      top.classList.toggle("scrolled", scrollY > 24);
+      const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+      prog.style.transform = "scaleX(" + (max > 0 ? y / max : 0) + ")";
+      top.classList.toggle("scrolled", y > 24);
+      // Recolhe ao rolar para baixo; volta ao rolar para cima, no topo ou durante a navegação pelos links
+      if (navLock || y < 120 || reduced()) { top.classList.remove("hide"); lastY = y; }
+      else if (Math.abs(y - lastY) > 6) {
+        top.classList.toggle("hide", y > lastY && !top.contains(document.activeElement));
+        lastY = y;
+      }
       ticking = false;
     });
   }
@@ -417,7 +426,7 @@
   let navAnim = null;
   function stopNav(){
     if (!navAnim) return;
-    cancelAnimationFrame(navAnim.raf); navAnim = null;
+    cancelAnimationFrame(navAnim.raf); navAnim = null; navLock = false;
     document.documentElement.style.scrollBehavior = "";
   }
   ["wheel","touchstart","keydown","mousedown"].forEach(ev => addEventListener(ev, stopNav, {passive:true}));
@@ -436,12 +445,13 @@
     const dur = Math.min(900, Math.max(420, Math.abs(dist) * 0.35));
     const ease = p => p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2;
     const t0 = performance.now();
+    navLock = true; top.classList.remove("hide");
     const step = now => {
       if (!navAnim) return;
       const p = Math.min(1, (now - t0) / dur);
       scrollTo(0, start + dist * ease(p));
       if (p < 1) navAnim.raf = requestAnimationFrame(step);
-      else { navAnim = null; html.style.scrollBehavior = ""; }
+      else { navAnim = null; html.style.scrollBehavior = ""; lastY = scrollY; setTimeout(() => { navLock = false; }, 80); }
     };
     navAnim = {raf: requestAnimationFrame(step)};
   }
@@ -455,6 +465,11 @@
     if (!el) return;
     e.preventDefault();
     smoothTo(sectionTop(el));
+    // Salto instantâneo (movimento reduzido): o cabeçalho encolhe logo depois; reajusta no quadro seguinte
+    if (reduced()) requestAnimationFrame(() => requestAnimationFrame(() => {
+      const html = document.documentElement; html.style.scrollBehavior = "auto";
+      scrollTo(0, sectionTop(el)); html.style.scrollBehavior = "";
+    }));
     try { history.pushState(null, "", "#" + id); } catch(err){}
     if (el.matches("section")) el.focus({preventScroll:true});
   });
