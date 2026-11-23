@@ -330,6 +330,44 @@
   });
   setBtn("idle");
 
+  /* ===== 4. Celular: PDF organizado pela conversa ===== */
+  const P = new Runner(), pbtn = $("#pdf-btn");
+  if (pbtn) {
+    const phist = $("#pdf-history"), pTyping = $("#pdf-typing"), pReply = $("#pdf-reply"), pCard = $("#pdf-card"), pStatus = $("#pdf-status");
+    // Rola apenas o histórico dentro do aparelho; a página fica onde está
+    const pLatest = smooth => {
+      const top = phist.scrollHeight - phist.clientHeight;
+      if (top <= 0) return;
+      if (smooth && !reduced() && phist.scrollTo) phist.scrollTo({top, behavior:"smooth"}); else phist.scrollTop = top;
+    };
+    const pSet = st => {
+      pbtn.dataset.state = st;
+      pbtn.setAttribute("aria-disabled", st === "running" ? "true" : "false");
+      pbtn.classList.toggle("again", st === "done");
+      pbtn.textContent = st === "done" ? "Rever exemplo" : "Ver como o Nexo organiza";
+    };
+    const pTypingOn = on => { pStatus.textContent = on ? "digitando…" : "online"; pStatus.classList.toggle("typing-now", on); };
+    const pReset = () => { P.start(); [pTyping, pReply, pCard].forEach(el => { el.hidden = true; }); pTypingOn(false); phist.scrollTop = 0; pSet("idle"); };
+    pbtn.addEventListener("click", async () => {
+      const st = pbtn.dataset.state;
+      if (st === "running") return;                 // cliques repetidos não duplicam mensagens
+      if (st === "done") { pReset(); return; }      // "Rever exemplo"
+      const t = P.start(); pSet("running");
+      if (reduced()) {                              // menos movimento: resposta e cartão de uma vez
+        pReply.hidden = false; pCard.hidden = false; pLatest(false); pSet("done"); return;
+      }
+      pTypingOn(true); pTyping.hidden = false; P.anim(pTyping, RISE, {duration:200}); pLatest(true);
+      await wait(700); if (!P.alive(t)) return;
+      pTyping.hidden = true; pTypingOn(false);
+      pReply.hidden = false; P.anim(pReply, RISE, {duration:220}); pLatest(true);
+      await wait(450); if (!P.alive(t)) return;
+      pCard.hidden = false; P.anim(pCard, RISE, {duration:260}); pLatest(true);
+      await wait(260); if (!P.alive(t)) return;
+      pSet("done");
+    });
+    pSet("idle");
+  }
+
   /* ===== Planos: seletor com fundo deslizante ===== */
   const plans = {
     mensal:{val:"39,90", per:"/mês", was:"Cobrança recorrente todo mês", period:"1 mês", total:"R$ 39,90 por mês"},
