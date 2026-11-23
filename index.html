@@ -74,7 +74,6 @@
 </head>
 <body>
 
-<div class="curtain" id="curtain" aria-hidden="true"><div class="c-in"><img src="assets/logo.webp" alt=""><p class="c-label" id="c-label"></p><svg class="c-line" viewBox="0 0 240 4" preserveAspectRatio="none"><path pathLength="1" d="M2 2H238"/></svg></div></div>
 
 <header class="top" id="top">
   <span class="progress" id="progress" aria-hidden="true"></span>
@@ -169,30 +168,42 @@
       <h2 id="t-rec">Finanças e rotina no mesmo lugar</h2>
       <p class="sec-lead">Tudo acontece na conversa com o Nexo. Você não precisa abrir planilha nem aprender um aplicativo novo.</p>
 
-      <div class="feature">
-        <figure class="shot has-trace armed" id="task-demo">
-          <svg class="trace" aria-hidden="true"><path pathLength="1"/></svg>
-          <p class="demo-label">Demonstração</p>
-          <div class="chat">
-            <div class="chat-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small>online</small></span></div>
-            <div class="chat-body">
-              <span class="day">Hoje</span>
-              <p class="msg in"><b>Bom dia! Seu resumo de hoje:</b><br><br>📅 <span class="num">10:00</span> · Reunião com o cliente<br>📅 <span class="num">15:30</span> · Dentista<br><span id="t-line">⏳ Tarefa: pagar a conta de luz</span><br><br>Quer que eu te lembre de algo mais?<span class="t">07:30</span></p>
-              <p class="msg out" id="t-out" data-rv>Paguei a conta de luz<span class="t">08:12 <svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg></span></p>
-              <div class="slot">
-                <span class="typing" id="t-typing" aria-hidden="true"><i></i><i></i><i></i></span>
-                <p class="msg in" id="t-in" data-rv>Feito, marquei a tarefa como concluída.<span class="t">08:12</span></p>
+      <div class="feature phone-feature">
+        <figure class="phone-figure">
+          <div class="phone">
+            <span class="phone-btn l1" aria-hidden="true"></span><span class="phone-btn l2" aria-hidden="true"></span><span class="phone-btn l3" aria-hidden="true"></span><span class="phone-btn r1" aria-hidden="true"></span>
+            <div class="phone-screen has-trace armed" id="task-demo" role="group" aria-label="Demonstração: concluir uma tarefa pela conversa com o Nexo">
+              <svg class="trace" aria-hidden="true"><path pathLength="1"/></svg>
+              <span class="phone-island" aria-hidden="true"></span>
+              <div class="phone-status" aria-hidden="true">
+                <span class="num">9:41</span>
+                <span class="phone-icons">
+                  <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+                  <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2.2 0 4.2.8 5.7 2.2l1.1-1.2A9.9 9.9 0 0 0 7.5.5 9.9 9.9 0 0 0 .7 3.2l1.1 1.2a8.3 8.3 0 0 1 5.7-2.2Zm0 3.3c1.3 0 2.5.5 3.4 1.3l1.1-1.2a6.6 6.6 0 0 0-9 0l1.1 1.2c.9-.8 2.1-1.3 3.4-1.3Zm0 3.3c-.5 0-.9.2-1.2.5l1.2 1.3 1.2-1.3c-.3-.3-.7-.5-1.2-.5Z"/></svg>
+                  <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="1.8"/><path d="M23 4v4c.8-.3 1.3-1.1 1.3-2S23.8 4.3 23 4Z" opacity=".45"/></svg>
+                </span>
               </div>
+              <div class="chat-head phone-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small id="t-status">online</small></span></div>
+              <div class="phone-history" id="t-history">
+                <span class="day">Hoje</span>
+                <p class="msg in"><b>Bom dia! Seu resumo de hoje:</b><br><br>📅 <span class="num">10:00</span> · Reunião com o cliente<br>📅 <span class="num">15:30</span> · Dentista<br><span id="t-line">⏳ Tarefa: pagar a conta de luz</span><br><br>Quer que eu te lembre de algo mais?<span class="t">07:30</span></p>
+                <p class="msg out" id="t-out" hidden>Paguei a conta de luz<span class="t">08:12 <svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg></span></p>
+                <span class="typing-bubble" id="t-typing" hidden aria-hidden="true"><i></i><i></i><i></i></span>
+                <p class="msg in" id="t-in" hidden>Feito, marquei a tarefa como concluída.<span class="t">08:12</span></p>
+              </div>
+              <div class="phone-task" id="task">
+                <div class="task-row">
+                  <span class="ck" id="t-ck"><svg viewBox="0 0 22 22" aria-hidden="true"><circle class="ck-ring" cx="11" cy="11" r="10"/><circle class="ck-bg" cx="11" cy="11" r="11"/><path class="ck-mark" pathLength="1" d="m6.6 11.3 3 3 5.9-6.3"/></svg></span>
+                  <div class="task-txt"><p class="task-t">Pagar a conta de luz</p><p class="task-s" id="task-s" aria-live="polite">Pendente · hoje</p></div>
+                </div>
+                <button type="button" class="phone-action" id="t-btn">Simular conclusão</button>
+              </div>
+              <span class="phone-home" aria-hidden="true"></span>
             </div>
           </div>
-          <div class="task" id="task">
-            <span class="ck" id="t-ck"><svg viewBox="0 0 22 22" aria-hidden="true"><circle class="ck-ring" cx="11" cy="11" r="10"/><circle class="ck-bg" cx="11" cy="11" r="11"/><path class="ck-mark" pathLength="1" d="m6.6 11.3 3 3 5.9-6.3"/></svg></span>
-            <div class="task-txt"><p class="task-t">Pagar a conta de luz</p><p class="task-s" id="task-s" aria-live="polite">Pendente · hoje</p></div>
-            <button type="button" class="ghost" id="t-btn">Simular conclusão</button>
-          </div>
-          <figcaption>Toque em “Simular conclusão” para ver como uma tarefa é concluída pela conversa. Exemplo ilustrativo.</figcaption>
+          <figcaption>Demonstração · exemplo ilustrativo</figcaption>
         </figure>
-        <div>
+        <div class="feature-copy">
           <h3>Comece o dia sabendo o que vem pela frente</h3>
           <p>O Nexo envia lembretes automáticos e um resumo diário dos seus compromissos. Quando terminar uma tarefa, é só avisar na conversa.</p>
         </div>

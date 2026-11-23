@@ -264,33 +264,60 @@
     io2.observe(panel);
   }
 
-  /* ===== 3. Simular conclusão da tarefa ===== */
-  const T = new Runner(), tdemo = $("#task-demo"), tbtn = $("#t-btn"), task = $("#task");
+  /* ===== 3. Celular: concluir a tarefa pela conversa ===== */
+  const T = new Runner(), tdemo = $("#task-demo"), tbtn = $("#t-btn"), task = $("#task"), hist = $("#t-history");
+  const tOut = $("#t-out"), tTyping = $("#t-typing"), tIn = $("#t-in"), tStatus = $("#t-status");
+  const RISE = [{opacity:0, transform:"translateY(8px)"},{opacity:1, transform:"none"}];
+  // Rola apenas o histórico dentro do aparelho; a página fica onde está
+  function toLatest(smooth){
+    const top = hist.scrollHeight - hist.clientHeight;
+    if (top <= 0) return;
+    if (smooth && !reduced() && hist.scrollTo) hist.scrollTo({top, behavior:"smooth"}); else hist.scrollTop = top;
+  }
+  function setBtn(state){
+    tbtn.dataset.state = state;
+    tbtn.setAttribute("aria-disabled", state === "running" ? "true" : "false");
+    tbtn.classList.toggle("again", state === "done");
+    tbtn.textContent = state === "done" ? "Rever exemplo" : "Simular conclusão";
+  }
+  function setTyping(on){
+    tStatus.textContent = on ? "digitando…" : "online";
+    tStatus.classList.toggle("typing-now", on);
+  }
   function resetTask(){
-    T.start(); tdemo.classList.add("armed"); task.classList.remove("done");
+    T.start(); tdemo.classList.add("armed");
+    [tOut, tTyping, tIn].forEach(el => { el.hidden = true; });
+    task.classList.remove("done"); setTyping(false);
     $("#task-s").textContent = "Pendente · hoje"; $("#t-line").textContent = "⏳ Tarefa: pagar a conta de luz";
-    tbtn.textContent = "Simular conclusão"; tbtn.disabled = false; tbtn.dataset.state = "";
+    hist.scrollTop = 0;
+    setBtn("idle");
   }
   function finishTask(){
     task.classList.add("done"); $("#task-s").textContent = "Concluída · agora";
     $("#t-line").textContent = "✅ Tarefa: pagar a conta de luz";
-    tbtn.textContent = "Recomeçar"; tbtn.disabled = false; tbtn.dataset.state = "done";
+    setBtn("done");
   }
   tbtn.addEventListener("click", async () => {
-    if (tbtn.dataset.state === "done") { resetTask(); return; }
-    const t = T.start(); tbtn.disabled = true;
-    if (reduced()) { tdemo.classList.remove("armed"); finishTask(); return; }
-    const out = $("#t-out"), typing = $("#t-typing"), reply = $("#t-in");
-    T.enter(out, {duration:220});
-    await wait(280); if (!T.alive(t)) return;
-    T.anim(typing, [{opacity:0, transform:"scale(.9)"},{opacity:1, transform:"none"}], {duration:150});
-    await wait(500); if (!T.alive(t)) return;
-    T.anim(typing, [{opacity:1},{opacity:0}], {duration:100});
-    T.enter(reply, {duration:220});
-    await wait(260); if (!T.alive(t)) return;
-    await T.trace(t, tdemo, reply, $("#t-ck"));
+    const st = tbtn.dataset.state;
+    if (st === "running") return;                 // cliques repetidos não duplicam mensagens
+    if (st === "done") { resetTask(); return; }   // "Rever exemplo"
+    const t = T.start(); setBtn("running");
+    if (reduced()) {                              // menos movimento: estado final direto
+      tOut.hidden = false; tIn.hidden = false; toLatest(false);
+      tdemo.classList.remove("armed"); finishTask(); return;
+    }
+    tOut.hidden = false; T.anim(tOut, RISE, {duration:200}); toLatest(true);
+    await wait(320); if (!T.alive(t)) return;
+    setTyping(true);
+    tTyping.hidden = false; T.anim(tTyping, RISE, {duration:200}); toLatest(true);
+    await wait(750); if (!T.alive(t)) return;
+    tTyping.hidden = true; setTyping(false);
+    tIn.hidden = false; T.anim(tIn, RISE, {duration:200}); toLatest(true);
+    await wait(380); if (!T.alive(t)) return;
+    await T.trace(t, tdemo, tIn, $("#t-ck"));
     if (T.alive(t)) finishTask();
   });
+  setBtn("idle");
 
   /* ===== Planos: seletor com fundo deslizante ===== */
   const plans = {
@@ -349,7 +376,7 @@
   const groups = [
     ["section:not(.hero) .kicker", ""], ["section:not(.hero) h2", ""], [".sec-lead", ""], [".demo-head .badge", ""],
     [".tabs", ""], [".panel", "scale"], [".feature:not(.rev) .shot", "left"], [".feature.rev .shot", "right"],
-    [".feature > div", ""], [".more > div", "", 50], [".plan", "scale"], [".faq details", "", 40],
+    [".feature > div", ""], [".phone-figure", ""], [".more > div", "", 50], [".plan", "scale"], [".faq details", "", 40],
     [".final p", ""], [".final .actions", ""]
   ];
   groups.forEach(([sel, kind, step]) => $$(sel).forEach((el, i) => {
@@ -384,48 +411,52 @@
     heroIO.observe($(".hero"));
   }
 
-  // Troca de seção com cortina da marca
-  const curtain = $("#curtain"), cLabel = $("#c-label"), cImg = $("#curtain img"), cLine = $("#curtain .c-line path");
-  const names = {"inicio":"Início","como-funciona":"Como funciona","recursos":"Recursos","planos":"Planos","duvidas":"Dúvidas"};
-  let busy = false;
-  function land(el){
-    const html = document.documentElement, prev = html.style.scrollBehavior;
-    html.style.scrollBehavior = "auto";
-    const y = el.id === "inicio" ? 0 : el.getBoundingClientRect().top + scrollY - 60;
-    scrollTo(0, Math.max(0, y));
-    html.style.scrollBehavior = prev;
-    $$("[data-reveal]", el).forEach(r => { if (r.getBoundingClientRect().top < innerHeight) r.classList.add("in"); });
-    try { history.replaceState(null, "", "#" + el.id); } catch(e){}
+  // Navegação interna: rolagem suave até a seção, com o título logo abaixo do cabeçalho fixo.
+  // A rolagem para na hora se a pessoa usar a roda do mouse, o trackpad, o toque ou o teclado.
+  const SECTIONS = ["inicio","como-funciona","recursos","planos","duvidas"];
+  let navAnim = null;
+  function stopNav(){
+    if (!navAnim) return;
+    cancelAnimationFrame(navAnim.raf); navAnim = null;
+    document.documentElement.style.scrollBehavior = "";
   }
-  async function goTo(id){
-    const el = document.getElementById(id);
-    if (!el || busy) return;
-    if (reduced() || !curtain.animate) { land(el); (el.matches("section") ? el : $("h1")).focus({preventScroll:true}); return; }
-    busy = true; curtain.classList.add("busy");
-    cLabel.textContent = names[id] || "";
-    const EIO = "cubic-bezier(.76,0,.24,1)";
-    const inA = curtain.animate([{clipPath:"inset(100% 0 0 0)"},{clipPath:"inset(0 0 0 0)"}], {duration:380, easing:EIO, fill:"forwards"});
-    const parts = [
-      cImg.animate([{opacity:0, transform:"translateY(10px)"},{opacity:1, transform:"none"}], {duration:240, delay:150, easing:EASE, fill:"forwards"}),
-      cLabel.animate([{opacity:0, transform:"translateY(14px)"},{opacity:1, transform:"none"}], {duration:260, delay:180, easing:EASE, fill:"forwards"}),
-      cLine.animate([{strokeDashoffset:1},{strokeDashoffset:0}], {duration:280, delay:200, easing:"cubic-bezier(.6,0,.3,1)", fill:"forwards"})
-    ];
-    await Promise.all([inA.finished, parts[2].finished]).catch(()=>{});
-    land(el);
-    await wait(60);
-    const outA = curtain.animate([{clipPath:"inset(0 0 0 0)"},{clipPath:"inset(0 0 100% 0)"}], {duration:400, easing:EIO, fill:"forwards"});
-    await outA.finished.catch(()=>{});
-    [inA, outA, ...parts].forEach(a => a.cancel());
-    curtain.classList.remove("busy"); busy = false;
-    (el.matches("section") ? el : $("h1")).focus({preventScroll:true});
+  ["wheel","touchstart","keydown","mousedown"].forEach(ev => addEventListener(ev, stopNav, {passive:true}));
+  function sectionTop(el){
+    if (el.id === "inicio") return 0;
+    // Usa a altura atual do cabeçalho: ele encolhe ao rolar e puxa a página junto,
+    // então a seção termina exatamente na borda de baixo do cabeçalho compacto.
+    const header = document.getElementById("top");
+    return Math.max(0, Math.round(el.getBoundingClientRect().top + scrollY - (header ? header.offsetHeight : 57)));
+  }
+  function smoothTo(y){
+    stopNav();
+    const html = document.documentElement, start = scrollY, dist = y - start;
+    html.style.scrollBehavior = "auto";
+    if (reduced() || Math.abs(dist) < 2) { scrollTo(0, y); html.style.scrollBehavior = ""; return; }
+    const dur = Math.min(900, Math.max(420, Math.abs(dist) * 0.35));
+    const ease = p => p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2;
+    const t0 = performance.now();
+    const step = now => {
+      if (!navAnim) return;
+      const p = Math.min(1, (now - t0) / dur);
+      scrollTo(0, start + dist * ease(p));
+      if (p < 1) navAnim.raf = requestAnimationFrame(step);
+      else { navAnim = null; html.style.scrollBehavior = ""; }
+    };
+    navAnim = {raf: requestAnimationFrame(step)};
   }
   document.addEventListener("click", e => {
-    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const id = a.getAttribute("href").slice(1);
-    if (!names[id]) return;
-    e.preventDefault(); goTo(id);
+    if (!SECTIONS.includes(id)) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    smoothTo(sectionTop(el));
+    try { history.pushState(null, "", "#" + id); } catch(err){}
+    if (el.matches("section")) el.focus({preventScroll:true});
   });
 
   // Reações ao ponteiro (apenas mouse/trackpad e sem movimento reduzido)
