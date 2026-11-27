@@ -12,7 +12,8 @@ Landing page do Nexo, assistente pessoal no WhatsApp. Publicada pelo GitHub Page
 | `assets/boot.js` | Roda antes de a página aparecer (ativa as animações e bloqueia exibição dentro de outros sites). |
 | `assets/vendor/lenis.min.js` | Rolagem suave da roda do mouse e do trackpad ([Lenis](https://github.com/darkroom-engineering/lenis) 1.3.23, licença MIT em `LENIS-LICENSE.txt`). Configuração em `assets/app.js` (`lerp: 0.15`). Desligada para quem prefere menos movimento. |
 | `assets/fonts/` | Fontes do site, hospedadas aqui: Geist (títulos e texto) e Instrument Serif itálico (a palavra "mensagem."). Licença SIL OFL em `OFL.txt`. |
-| `assets/logo.webp`, `assets/favicon.png`, `assets/maxmidia.webp` | Logotipo, ícone da aba e logo da maXmidia no rodapé. |
+| `assets/logo.webp`, `assets/maxmidia.webp` | Logotipo do Nexo e logo da maXmidia no rodapé. |
+| `favicon.ico`, `assets/favicon.svg`, `assets/icon-192.png`, `assets/apple-touch-icon.png`, `assets/favicon.png` | Ícone da aba (logo do Nexo em branco sobre fundo escuro): SVG nas abas, ICO para navegadores antigos e Google, 180 px para a tela inicial do iPhone. |
 | `og-image.png` | Imagem de prévia quando o link é compartilhado (WhatsApp, redes sociais). |
 | `robots.txt`, `sitemap.xml` | Informações para o Google. |
 | `CNAME` | Domínio do site (nexoassist.com). Não apague. |
