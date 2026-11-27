@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; font-src 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 <meta name="description" content="Mande uma mensagem ou áudio para o Nexo no WhatsApp: ele registra gastos, organiza compromissos e envia relatórios. Plano completo por R$ 39,90/mês.">
 <link rel="canonical" href="https://nexoassist.com/">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#121212">
+<meta name="theme-color" content="#0E0F0E">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Nexo Assist">
@@ -70,15 +70,14 @@
 }
 </script>
 <script src="assets/boot.js"></script>
+<link rel="preload" href="assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-
-
 <header class="top" id="top">
-  <span class="progress" id="progress" aria-hidden="true"></span>
   <div class="wrap">
-    <a class="brand" href="#inicio" aria-label="Nexo, voltar ao início"><img src="assets/logo.webp" alt="" width="30" height="29">Nexo</a>
+    <a class="brand" href="#inicio" aria-label="Nexo, voltar ao início"><img src="assets/logo.webp" alt="" width="28" height="27">Nexo</a>
     <nav class="nav" aria-label="Seções">
       <a href="#como-funciona">Como funciona</a>
       <a href="#recursos">Recursos</a>
@@ -90,12 +89,12 @@
 </header>
 
 <main id="inicio">
-  <!-- 1. Primeira tela -->
+  <!-- Abertura -->
   <section class="hero" aria-labelledby="titulo">
     <div class="wrap">
-      <div>
+      <div class="hero-copy">
         <p class="eyebrow"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z"/></svg>Seu assistente pessoal no WhatsApp</p>
-        <h1 id="titulo"><span>Organize gastos</span> <span>e compromissos</span> <em><span>mandando uma</span> <span>mensagem.</span></em></h1>
+        <h1 id="titulo"><span class="l">Organize gastos</span> <span class="l">e compromissos</span> <span class="l">mandando uma</span> <span class="l"><em class="serif">mensagem.</em></span></h1>
         <p class="lead">Escreva ou grave um áudio para o Nexo no WhatsApp, do jeito que você falaria com uma pessoa, e ele registra o gasto, agenda o lembrete ou te mostra quanto você já gastou.</p>
         <div class="actions">
           <a class="btn" data-cta href="#planos">Assinar o Nexo</a>
@@ -104,25 +103,40 @@
         <p class="micro">Plano completo por <span class="num">R$ 39,90</span>/mês. Funciona no WhatsApp que você já usa.</p>
       </div>
 
-      <div class="hero-demo armed" id="hero-demo" aria-label="Exemplo de uso do Nexo">
-        <div class="chat">
-          <div class="chat-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small>online</small></span></div>
-          <div class="chat-body">
-            <span class="day">Hoje</span>
-            <p class="msg out" id="h-out" data-rv>Gastei <span class="tk" id="h-amt">87,40</span> no mercado agora<span class="t">12:41 <svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg></span></p>
-            <div class="slot">
-              <span class="typing" id="h-typing" aria-hidden="true"><i></i><i></i><i></i></span>
-              <p class="msg in" id="h-in" data-rv>Anotado! Registrei como despesa em Alimentação. 🛒<span class="t">12:41</span></p>
+      <div class="hero-stage has-trace armed" id="hero-demo" role="group" aria-label="Exemplo de uso do Nexo">
+        <svg class="trace" aria-hidden="true"><path pathLength="1"/></svg>
+        <div class="phone hero-phone">
+          <span class="phone-btn l1" aria-hidden="true"></span><span class="phone-btn l2" aria-hidden="true"></span><span class="phone-btn l3" aria-hidden="true"></span><span class="phone-btn r1" aria-hidden="true"></span>
+          <div class="phone-screen">
+            <span class="phone-island" aria-hidden="true"></span>
+            <div class="phone-status" aria-hidden="true">
+                <span class="num">9:41</span>
+                <span class="phone-icons">
+                  <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+                  <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2.2 0 4.2.8 5.7 2.2l1.1-1.2A9.9 9.9 0 0 0 7.5.5 9.9 9.9 0 0 0 .7 3.2l1.1 1.2a8.3 8.3 0 0 1 5.7-2.2Zm0 3.3c1.3 0 2.5.5 3.4 1.3l1.1-1.2a6.6 6.6 0 0 0-9 0l1.1 1.2c.9-.8 2.1-1.3 3.4-1.3Zm0 3.3c-.5 0-.9.2-1.2.5l1.2 1.3 1.2-1.3c-.3-.3-.7-.5-1.2-.5Z"/></svg>
+                  <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="1.8"/><path d="M23 4v4c.8-.3 1.3-1.1 1.3-2S23.8 4.3 23 4Z" opacity=".45"/></svg>
+                </span>
+              </div>
+            <div class="chat-head phone-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small>online</small></span></div>
+            <div class="phone-chat">
+              <span class="day">Hoje</span>
+              <p class="msg out" id="h-out" data-rv>Gastei <span class="tk" id="h-amt">87,40</span> no mercado agora<span class="t">12:41 <svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg></span></p>
+              <div class="slot">
+                <span class="typing" id="h-typing" aria-hidden="true"><i></i><i></i><i></i></span>
+                <p class="msg in" id="h-in" data-rv>Anotado! Registrei como despesa em Alimentação. 🛒<span class="t">12:41</span></p>
+              </div>
             </div>
+            <div class="phone-compose" aria-hidden="true"><span class="pc-field">Mensagem</span><span class="pc-mic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 1 0-7 0v6A3.5 3.5 0 0 0 12 15Zm6-3.6a.9.9 0 1 0-1.8 0 4.2 4.2 0 0 1-8.4 0 .9.9 0 1 0-1.8 0 6 6 0 0 0 5.1 5.9V20H8.8a.9.9 0 1 0 0 1.8h6.4a.9.9 0 1 0 0-1.8H12.9v-2.7a6 6 0 0 0 5.1-5.9Z"/></svg></span></div>
+            <span class="phone-home" aria-hidden="true"></span>
           </div>
         </div>
-        <div class="result" id="h-result">
-          <p class="result-label" data-rv><span class="ck" id="h-ck"><svg viewBox="0 0 22 22" aria-hidden="true"><circle class="ck-bg" cx="11" cy="11" r="11"/><path class="ck-mark" pathLength="1" d="m6.6 11.3 3 3 5.9-6.3"/></svg></span>Despesa registrada</p>
-          <p class="result-main" data-rv><span>R$ </span><span class="val-hl" id="h-val" data-rv>87,40</span></p>
+        <div class="result hero-card" id="h-result" data-rv>
+          <p class="result-label"><span class="ck" id="h-ck"><svg viewBox="0 0 22 22" aria-hidden="true"><circle class="ck-bg" cx="11" cy="11" r="11"/><path class="ck-mark" pathLength="1" d="m6.6 11.3 3 3 5.9-6.3"/></svg></span>Despesa registrada</p>
+          <p class="result-main"><span>R$ </span><span class="val-hl" id="h-val">87,40</span></p>
           <dl class="facts">
-            <div data-rv><dt>Categoria</dt><dd>Alimentação</dd></div>
-            <div data-rv><dt>Descrição</dt><dd>Mercado</dd></div>
-            <div data-rv><dt>Data</dt><dd>Hoje</dd></div>
+            <div><dt>Categoria</dt><dd>Alimentação</dd></div>
+            <div><dt>Descrição</dt><dd>Mercado</dd></div>
+            <div><dt>Data</dt><dd>Hoje</dd></div>
           </dl>
           <div class="result-foot"><button type="button" class="replay" id="h-replay"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.7-4"/><path d="M2.5 1.8v3h3"/></svg>Rever exemplo</button></div>
         </div>
@@ -131,25 +145,25 @@
     </div>
   </section>
 
-  <!-- 2. Demonstração -->
+  <!-- 01 Como funciona -->
   <section id="como-funciona" tabindex="-1" aria-labelledby="t-demo">
     <div class="wrap">
-      <div class="demo-head">
+      <div class="sec-head">
         <div>
-          <p class="kicker">Como funciona</p>
+          <p class="kicker"><span class="idx">01</span>Como funciona</p>
           <h2 id="t-demo">Você pede. O Nexo resolve na conversa.</h2>
-          <p class="sec-lead">Escolha uma situação e veja o pedido, a resposta do Nexo e o que fica registrado.</p>
         </div>
-        <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l5.5-3.5z" fill="currentColor" stroke="none"/></svg>Demonstração · valores ilustrativos · sem cadastro</span>
+        <div>
+          <p class="sec-lead">Escolha uma situação e veja o pedido, a resposta do Nexo e o que fica registrado.</p>
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l5.5-3.5z" fill="currentColor" stroke="none"/></svg>Demonstração · valores ilustrativos · sem cadastro</span>
+        </div>
       </div>
-
       <div class="tabs" role="tablist" aria-label="Situações de exemplo">
         <span class="tab-thumb" aria-hidden="true"></span>
         <button class="tab" role="tab" id="tab-0" aria-controls="painel" aria-selected="true" tabindex="0">Ver quanto gastei no mês</button>
         <button class="tab" role="tab" id="tab-1" aria-controls="painel" aria-selected="false" tabindex="-1">Marcar um compromisso</button>
         <button class="tab" role="tab" id="tab-2" aria-controls="painel" aria-selected="false" tabindex="-1">Registrar um investimento</button>
       </div>
-
       <div class="panel has-trace" id="painel" role="tabpanel" aria-labelledby="tab-0">
         <svg class="trace" aria-hidden="true"><path pathLength="1"/></svg>
         <div class="chat">
@@ -161,102 +175,114 @@
     </div>
   </section>
 
-  <!-- 3. Recursos -->
+  <!-- Faixa tipográfica -->
+  <div class="statement">
+    <div class="wrap">
+      <p class="statement-text" id="statement">Tudo acontece na conversa com o Nexo. <span class="sub">Você não precisa abrir planilha nem aprender um aplicativo novo.</span></p>
+    </div>
+  </div>
+
+  <!-- 02 Recursos -->
   <section id="recursos" tabindex="-1" aria-labelledby="t-rec">
     <div class="wrap">
-      <p class="kicker">Recursos</p>
-      <h2 id="t-rec">Finanças e rotina no mesmo lugar</h2>
-      <p class="sec-lead">Tudo acontece na conversa com o Nexo. Você não precisa abrir planilha nem aprender um aplicativo novo.</p>
-
-      <div class="feature phone-feature">
-        <figure class="phone-figure">
-          <div class="phone">
-            <span class="phone-btn l1" aria-hidden="true"></span><span class="phone-btn l2" aria-hidden="true"></span><span class="phone-btn l3" aria-hidden="true"></span><span class="phone-btn r1" aria-hidden="true"></span>
-            <div class="phone-screen has-trace armed" id="task-demo" role="group" aria-label="Demonstração: concluir uma tarefa pela conversa com o Nexo">
-              <svg class="trace" aria-hidden="true"><path pathLength="1"/></svg>
-              <span class="phone-island" aria-hidden="true"></span>
-              <div class="phone-status" aria-hidden="true">
-                <span class="num">9:41</span>
-                <span class="phone-icons">
-                  <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
-                  <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2.2 0 4.2.8 5.7 2.2l1.1-1.2A9.9 9.9 0 0 0 7.5.5 9.9 9.9 0 0 0 .7 3.2l1.1 1.2a8.3 8.3 0 0 1 5.7-2.2Zm0 3.3c1.3 0 2.5.5 3.4 1.3l1.1-1.2a6.6 6.6 0 0 0-9 0l1.1 1.2c.9-.8 2.1-1.3 3.4-1.3Zm0 3.3c-.5 0-.9.2-1.2.5l1.2 1.3 1.2-1.3c-.3-.3-.7-.5-1.2-.5Z"/></svg>
-                  <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="1.8"/><path d="M23 4v4c.8-.3 1.3-1.1 1.3-2S23.8 4.3 23 4Z" opacity=".45"/></svg>
-                </span>
-              </div>
-              <div class="chat-head phone-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small id="t-status">online</small></span></div>
-              <div class="phone-history" id="t-history">
-                <span class="day">Hoje</span>
-                <p class="msg in"><b>Bom dia! Seu resumo de hoje:</b><br><br>📅 <span class="num">10:00</span> · Reunião com o cliente<br>📅 <span class="num">15:30</span> · Dentista<br><span id="t-line">⏳ Tarefa: pagar a conta de luz</span><br><br>Quer que eu te lembre de algo mais?<span class="t">07:30</span></p>
-                <p class="msg out" id="t-out" hidden>Paguei a conta de luz<span class="t">08:12 <svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg></span></p>
-                <span class="typing-bubble" id="t-typing" hidden aria-hidden="true"><i></i><i></i><i></i></span>
-                <p class="msg in" id="t-in" hidden>Feito, marquei a tarefa como concluída.<span class="t">08:12</span></p>
-              </div>
-              <div class="phone-task" id="task">
-                <div class="task-row">
-                  <span class="ck" id="t-ck"><svg viewBox="0 0 22 22" aria-hidden="true"><circle class="ck-ring" cx="11" cy="11" r="10"/><circle class="ck-bg" cx="11" cy="11" r="11"/><path class="ck-mark" pathLength="1" d="m6.6 11.3 3 3 5.9-6.3"/></svg></span>
-                  <div class="task-txt"><p class="task-t">Pagar a conta de luz</p><p class="task-s" id="task-s" aria-live="polite">Pendente · hoje</p></div>
-                </div>
-                <button type="button" class="phone-action" id="t-btn">Simular conclusão</button>
-              </div>
-              <span class="phone-home" aria-hidden="true"></span>
-            </div>
-          </div>
-          <figcaption>Demonstração · exemplo ilustrativo</figcaption>
-        </figure>
-        <div class="feature-copy">
-          <h3>Comece o dia sabendo o que vem pela frente</h3>
-          <p>O Nexo envia lembretes automáticos e um resumo diário dos seus compromissos. Quando terminar uma tarefa, é só avisar na conversa.</p>
+      <div class="sec-head">
+        <div>
+          <p class="kicker"><span class="idx">02</span>Recursos</p>
+          <h2 id="t-rec">Finanças e rotina no mesmo lugar</h2>
         </div>
       </div>
-
-      <div class="feature phone-feature pdf-feature">
-        <div class="feature-copy">
-          <h3>Seus PDFs organizados pelo WhatsApp</h3>
-          <p>Envie um PDF e peça ao Nexo para guardar. Ele preserva o original, identifica os dados do documento e sugere um nome para você revisar.</p>
-        </div>
-        <figure class="phone-figure">
-          <div class="phone">
-            <span class="phone-btn l1" aria-hidden="true"></span><span class="phone-btn l2" aria-hidden="true"></span><span class="phone-btn l3" aria-hidden="true"></span><span class="phone-btn r1" aria-hidden="true"></span>
-            <div class="phone-screen" id="pdf-demo" role="group" aria-label="Exemplo ilustrativo: organizar um PDF pela conversa com o Nexo">
-              <span class="phone-island" aria-hidden="true"></span>
-              <div class="phone-status" aria-hidden="true">
-                <span class="num">9:41</span>
-                <span class="phone-icons">
-                  <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
-                  <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2.2 0 4.2.8 5.7 2.2l1.1-1.2A9.9 9.9 0 0 0 7.5.5 9.9 9.9 0 0 0 .7 3.2l1.1 1.2a8.3 8.3 0 0 1 5.7-2.2Zm0 3.3c1.3 0 2.5.5 3.4 1.3l1.1-1.2a6.6 6.6 0 0 0-9 0l1.1 1.2c.9-.8 2.1-1.3 3.4-1.3Zm0 3.3c-.5 0-.9.2-1.2.5l1.2 1.3 1.2-1.3c-.3-.3-.7-.5-1.2-.5Z"/></svg>
-                  <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="1.8"/><path d="M23 4v4c.8-.3 1.3-1.1 1.3-2S23.8 4.3 23 4Z" opacity=".45"/></svg>
-                </span>
-              </div>
-              <div class="chat-head phone-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small id="pdf-status">online</small></span></div>
-              <div class="phone-history" id="pdf-history" aria-live="polite">
-                <span class="day">Hoje</span>
-                <p class="msg out doc-msg"><span class="doc-file"><span class="doc-ico" aria-hidden="true"><b>PDF</b></span><span class="doc-meta"><b>comprovante-pix.pdf</b><small>PDF · 1 página</small></span></span>Guarda esse comprovante pra mim<span class="t">10:24 <svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg></span></p>
-                <span class="typing-bubble" id="pdf-typing" hidden aria-hidden="true"><i></i><i></i><i></i></span>
-                <p class="msg in" id="pdf-reply" hidden>Recebi o PDF e preservei o original. Confira os dados antes de aprovar.<span class="t">10:24</span></p>
-                <div class="doc-card" id="pdf-card" hidden>
-                  <p class="doc-card-label"><span class="dot" aria-hidden="true"></span>Sugestão para revisar</p>
-                  <dl class="doc-data">
-                    <div><dt>Tipo</dt><dd>Comprovante de Pix</dd></div>
-                    <div><dt>Emissor</dt><dd>Instituição Exemplo</dd></div>
-                    <div><dt>Valor identificado</dt><dd class="num">R$ 150,00</dd></div>
-                    <div class="stack"><dt>Nome sugerido</dt><dd><span class="doc-name">Comprovante_Pix_2026-11.pdf</span></dd></div>
-                    <div><dt>Pasta</dt><dd><span class="doc-folder"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M1.75 4.25a1.5 1.5 0 0 1 1.5-1.5h3l1.5 1.75h5a1.5 1.5 0 0 1 1.5 1.5v5.75a1.5 1.5 0 0 1-1.5 1.5h-9.5a1.5 1.5 0 0 1-1.5-1.5z"/></svg>Recebidos</span></dd></div>
-                  </dl>
-                  <p class="doc-note">Organizar o PDF não registra um pagamento.</p>
-                </div>
-              </div>
-              <div class="phone-task pdf-panel">
-                <button type="button" class="phone-action" id="pdf-btn" aria-controls="pdf-history">Ver como o Nexo organiza</button>
-              </div>
-              <span class="phone-home" aria-hidden="true"></span>
-            </div>
+      <div class="bento">
+        <article class="tile tile-phone">
+          <div class="tile-copy">
+            <h3>Comece o dia sabendo o que vem pela frente</h3>
+            <p>O Nexo envia lembretes automáticos e um resumo diário dos seus compromissos. Quando terminar uma tarefa, é só avisar na conversa.</p>
           </div>
-          <figcaption>Exemplo ilustrativo</figcaption>
-        </figure>
-      </div>
-
-      <div class="feature rev">
-        <figure class="shot tilt">
+          <figure class="phone-figure">
+            <div class="phone">
+              <span class="phone-btn l1" aria-hidden="true"></span><span class="phone-btn l2" aria-hidden="true"></span><span class="phone-btn l3" aria-hidden="true"></span><span class="phone-btn r1" aria-hidden="true"></span>
+              <div class="phone-screen has-trace armed" id="task-demo" role="group" aria-label="Demonstração: concluir uma tarefa pela conversa com o Nexo">
+                <svg class="trace" aria-hidden="true"><path pathLength="1"/></svg>
+                <span class="phone-island" aria-hidden="true"></span>
+                <div class="phone-status" aria-hidden="true">
+                  <span class="num">9:41</span>
+                  <span class="phone-icons">
+                    <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+                    <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2.2 0 4.2.8 5.7 2.2l1.1-1.2A9.9 9.9 0 0 0 7.5.5 9.9 9.9 0 0 0 .7 3.2l1.1 1.2a8.3 8.3 0 0 1 5.7-2.2Zm0 3.3c1.3 0 2.5.5 3.4 1.3l1.1-1.2a6.6 6.6 0 0 0-9 0l1.1 1.2c.9-.8 2.1-1.3 3.4-1.3Zm0 3.3c-.5 0-.9.2-1.2.5l1.2 1.3 1.2-1.3c-.3-.3-.7-.5-1.2-.5Z"/></svg>
+                    <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="1.8"/><path d="M23 4v4c.8-.3 1.3-1.1 1.3-2S23.8 4.3 23 4Z" opacity=".45"/></svg>
+                  </span>
+                </div>
+                <div class="chat-head phone-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small id="t-status">online</small></span></div>
+                <div class="phone-history" id="t-history">
+                  <span class="day">Hoje</span>
+                  <p class="msg in"><b>Bom dia! Seu resumo de hoje:</b><br><br>📅 <span class="num">10:00</span> · Reunião com o cliente<br>📅 <span class="num">15:30</span> · Dentista<br><span id="t-line">⏳ Tarefa: pagar a conta de luz</span><br><br>Quer que eu te lembre de algo mais?<span class="t">07:30</span></p>
+                  <p class="msg out" id="t-out" hidden>Paguei a conta de luz<span class="t">08:12 <svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg></span></p>
+                  <span class="typing-bubble" id="t-typing" hidden aria-hidden="true"><i></i><i></i><i></i></span>
+                  <p class="msg in" id="t-in" hidden>Feito, marquei a tarefa como concluída.<span class="t">08:12</span></p>
+                </div>
+                <div class="phone-task" id="task">
+                  <div class="task-row">
+                    <span class="ck" id="t-ck"><svg viewBox="0 0 22 22" aria-hidden="true"><circle class="ck-ring" cx="11" cy="11" r="10"/><circle class="ck-bg" cx="11" cy="11" r="11"/><path class="ck-mark" pathLength="1" d="m6.6 11.3 3 3 5.9-6.3"/></svg></span>
+                    <div class="task-txt"><p class="task-t">Pagar a conta de luz</p><p class="task-s" id="task-s" aria-live="polite">Pendente · hoje</p></div>
+                  </div>
+                  <button type="button" class="phone-action" id="t-btn">Simular conclusão</button>
+                </div>
+                <span class="phone-home" aria-hidden="true"></span>
+              </div>
+            </div>
+            <figcaption>Demonstração · exemplo ilustrativo</figcaption>
+          </figure>
+        </article>
+        <article class="tile tile-phone">
+          <div class="tile-copy">
+            <h3>Seus PDFs organizados pelo WhatsApp</h3>
+            <p>Envie um PDF e peça ao Nexo para guardar. Ele preserva o original, identifica os dados do documento e sugere um nome para você revisar.</p>
+          </div>
+          <figure class="phone-figure">
+            <div class="phone">
+              <span class="phone-btn l1" aria-hidden="true"></span><span class="phone-btn l2" aria-hidden="true"></span><span class="phone-btn l3" aria-hidden="true"></span><span class="phone-btn r1" aria-hidden="true"></span>
+              <div class="phone-screen" id="pdf-demo" role="group" aria-label="Exemplo ilustrativo: organizar um PDF pela conversa com o Nexo">
+                <span class="phone-island" aria-hidden="true"></span>
+                <div class="phone-status" aria-hidden="true">
+                  <span class="num">9:41</span>
+                  <span class="phone-icons">
+                    <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+                    <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2.2 0 4.2.8 5.7 2.2l1.1-1.2A9.9 9.9 0 0 0 7.5.5 9.9 9.9 0 0 0 .7 3.2l1.1 1.2a8.3 8.3 0 0 1 5.7-2.2Zm0 3.3c1.3 0 2.5.5 3.4 1.3l1.1-1.2a6.6 6.6 0 0 0-9 0l1.1 1.2c.9-.8 2.1-1.3 3.4-1.3Zm0 3.3c-.5 0-.9.2-1.2.5l1.2 1.3 1.2-1.3c-.3-.3-.7-.5-1.2-.5Z"/></svg>
+                    <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="8" rx="1.8"/><path d="M23 4v4c.8-.3 1.3-1.1 1.3-2S23.8 4.3 23 4Z" opacity=".45"/></svg>
+                  </span>
+                </div>
+                <div class="chat-head phone-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small id="pdf-status">online</small></span></div>
+                <div class="phone-history" id="pdf-history" aria-live="polite">
+                  <span class="day">Hoje</span>
+                  <p class="msg out doc-msg"><span class="doc-file"><span class="doc-ico" aria-hidden="true"><b>PDF</b></span><span class="doc-meta"><b>comprovante-pix.pdf</b><small>PDF · 1 página</small></span></span>Guarda esse comprovante pra mim<span class="t">10:24 <svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg></span></p>
+                  <span class="typing-bubble" id="pdf-typing" hidden aria-hidden="true"><i></i><i></i><i></i></span>
+                  <p class="msg in" id="pdf-reply" hidden>Recebi o PDF e preservei o original. Confira os dados antes de aprovar.<span class="t">10:24</span></p>
+                  <div class="doc-card" id="pdf-card" hidden>
+                    <p class="doc-card-label"><span class="dot" aria-hidden="true"></span>Sugestão para revisar</p>
+                    <dl class="doc-data">
+                      <div><dt>Tipo</dt><dd>Comprovante de Pix</dd></div>
+                      <div><dt>Emissor</dt><dd>Instituição Exemplo</dd></div>
+                      <div><dt>Valor identificado</dt><dd class="num">R$ 150,00</dd></div>
+                      <div class="stack"><dt>Nome sugerido</dt><dd><span class="doc-name">Comprovante_Pix_2026-11.pdf</span></dd></div>
+                      <div><dt>Pasta</dt><dd><span class="doc-folder"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M1.75 4.25a1.5 1.5 0 0 1 1.5-1.5h3l1.5 1.75h5a1.5 1.5 0 0 1 1.5 1.5v5.75a1.5 1.5 0 0 1-1.5 1.5h-9.5a1.5 1.5 0 0 1-1.5-1.5z"/></svg>Recebidos</span></dd></div>
+                    </dl>
+                    <p class="doc-note">Organizar o PDF não registra um pagamento.</p>
+                  </div>
+                </div>
+                <div class="phone-task pdf-panel">
+                  <button type="button" class="phone-action" id="pdf-btn" aria-controls="pdf-history">Ver como o Nexo organiza</button>
+                </div>
+                <span class="phone-home" aria-hidden="true"></span>
+              </div>
+            </div>
+            <figcaption>Exemplo ilustrativo</figcaption>
+          </figure>
+        </article>
+        <article class="tile tile-wide">
+          <div class="tile-copy">
+            <h3>Encontre qualquer movimentação em segundos</h3>
+            <p>Pergunte como você perguntaria a alguém. O Nexo procura nos seus registros e responde com valor, categoria e data.</p>
+          </div>
+          <figure>
           <div class="chat">
             <div class="chat-head"><span class="av"><img src="assets/logo.webp" alt=""></span><span><b>Nexo</b><small>online</small></span></div>
             <div class="chat-body">
@@ -266,53 +292,57 @@
           </div>
           <figcaption>Exemplo ilustrativo: uma busca por movimentação respondida na hora.</figcaption>
         </figure>
-        <div>
-          <h3>Encontre qualquer movimentação em segundos</h3>
-          <p>Pergunte como você perguntaria a alguém. O Nexo procura nos seus registros e responde com valor, categoria e data.</p>
-        </div>
-      </div>
-
-      <div class="more">
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </article>
+        <article class="tile tile-sm">
+          <div class="viz" aria-hidden="true"><div class="vn"><span class="vn-play"></span><span class="vn-wave"><i style="--h:0.35"></i><i style="--h:0.6"></i><i style="--h:0.9"></i><i style="--h:0.5"></i><i style="--h:0.75"></i><i style="--h:1"></i><i style="--h:0.55"></i><i style="--h:0.3"></i><i style="--h:0.7"></i><i style="--h:0.45"></i><i style="--h:0.85"></i><i style="--h:0.4"></i><i style="--h:0.6"></i><i style="--h:0.3"></i><i style="--h:0.5"></i><i style="--h:0.25"></i><i style="--h:0.4"></i><i style="--h:0.2"></i></span><span class="vn-t">0:07</span></div></div>
           <h3>Texto ou áudio</h3>
           <p>Mande uma mensagem ou um áudio. O Nexo entende, identifica os valores e organiza tudo.</p>
-        </div>
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg>
+        </article>
+        <article class="tile tile-sm">
+          <div class="viz" aria-hidden="true"><div class="cards"><div class="cc back"></div><div class="cc front"><span class="chip"></span><span class="dig">•••• 4821</span></div></div></div>
           <h3>Gestão de cartões</h3>
           <p>Acompanhe os gastos de cada cartão, com visão por categoria, e tenha mais previsibilidade.</p>
-        </div>
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l3.5-4 3 2.5L20 7"/></svg>
+        </article>
+        <article class="tile tile-sm">
+          <div class="viz" aria-hidden="true"><svg class="chart" viewBox="0 0 240 100" preserveAspectRatio="none"><defs><linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B6B49" stop-opacity=".16"/><stop offset="1" stop-color="#0B6B49" stop-opacity="0"/></linearGradient></defs><path class="grid" d="M0 25H240M0 50H240M0 75H240"/><path class="area" d="M0 82 L30 76 L60 79 L90 64 L120 66 L150 50 L180 44 L210 30 L240 22 V100 H0Z"/><path class="ln" d="M0 82 L30 76 L60 79 L90 64 L120 66 L150 50 L180 44 L210 30 L240 22"/><circle class="pt" cx="238" cy="22" r="3.5"/></svg></div>
           <h3>Investimentos</h3>
           <p>Registre aportes e consulte sua carteira pelo WhatsApp, tudo centralizado.</p>
-        </div>
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>
+        </article>
+        <article class="tile tile-sm">
+          <div class="viz" aria-hidden="true"><div class="rep"><b>Relatório de hoje</b><span class="r"><span>Alimentação</span><span style="--w:78%"></span></span><span class="r"><span>Casa</span><span style="--w:56%"></span></span><span class="r"><span>Transporte</span><span style="--w:40%"></span></span></div></div>
           <h3>Relatórios todos os dias</h3>
           <p>Receba relatórios para acompanhar sua situação financeira sem precisar perguntar.</p>
-        </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- Planos -->
+  <!-- 03 Planos -->
   <section id="planos" tabindex="-1" aria-labelledby="t-planos">
-    <div class="wrap">
-      <p class="kicker">Planos</p>
-      <h2 id="t-planos">Um plano com tudo incluído</h2>
-      <p class="sec-lead"><span data-only="multi">Escolha pagar por mês ou a cada 6 meses. Os recursos são os mesmos.</span><span data-only="single" hidden>Assinatura mensal com todos os recursos incluídos.</span></p>
-
-      <div class="plan spot">
-        <div class="plan-main">
+    <div class="wrap plans-grid">
+      <div class="plans-copy">
+        <p class="kicker"><span class="idx">03</span>Planos</p>
+        <h2 id="t-planos">Um plano com tudo incluído</h2>
+        <p class="sec-lead"><span data-only="multi">Escolha pagar por mês ou a cada 6 meses. Os recursos são os mesmos.</span><span data-only="single" hidden>Assinatura mensal com todos os recursos incluídos.</span></p>
+        <h3>O que está incluído</h3>
+        <ul class="incl">
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Registro de gastos e receitas por mensagem ou áudio</li>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Relatórios diários e busca de movimentações</li>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Compromissos, lembretes e resumo diário</li>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Gestão de cartões com visão por categoria</li>
+            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Registro e consulta de investimentos</li>
+          </ul>
+      </div>
+      <div class="plan">
+        <div class="plan-top">
           <h3>Plano completo</h3>
           <div class="switch" role="group" aria-label="Período de cobrança">
             <span class="thumb" aria-hidden="true"></span>
             <button type="button" data-period="mensal" aria-pressed="true">Mensal</button>
             <button type="button" data-period="semestral" aria-pressed="false">Semestral</button>
           </div>
-          <div id="p-block" aria-live="polite">
+        </div>
+        <div id="p-block" aria-live="polite">
             <p class="price"><span class="cur">R$</span><span class="val" id="p-val">39,90</span><span class="per" id="p-per">/mês</span></p>
             <p class="was" id="p-was">Cobrança recorrente todo mês</p>
             <dl class="bill">
@@ -320,29 +350,20 @@
               <dt>Total cobrado</dt><dd id="p-total">R$ 39,90 por mês</dd>
             </dl>
           </div>
-          <a class="btn" data-checkout href="#planos">Assinar o Nexo</a>
-          <p class="pay-via" id="pay-via" hidden>Você conclui a assinatura na página de pagamento da Stripe.</p>
-          <p class="pay-note" id="pay-note" role="status">Estamos trocando de plataforma de pagamento. Para assinar agora, fale com o suporte pelo WhatsApp: <a href="https://wa.me/5582999538090">+55 (82) 99953-8090</a>.</p>
-        </div>
-        <div class="plan-side">
-          <h3>O que está incluído</h3>
-          <ul class="incl">
-            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Registro de gastos e receitas por mensagem ou áudio</li>
-            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Relatórios diários e busca de movimentações</li>
-            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Compromissos, lembretes e resumo diário</li>
-            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Gestão de cartões com visão por categoria</li>
-            <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#47D77B"/><path d="m6 10.3 2.6 2.6L14.2 7" fill="none" stroke="#0A0A0A" stroke-width="2"/></svg>Registro e consulta de investimentos</li>
-          </ul>
-        </div>
+        <a class="btn" data-checkout href="#planos">Assinar o Nexo</a>
+        <p class="pay-via" id="pay-via" hidden>Você conclui a assinatura na página de pagamento da Stripe.</p>
+        <p class="pay-note" id="pay-note" role="status">Estamos trocando de plataforma de pagamento. Para assinar agora, fale com o suporte pelo WhatsApp: <a href="https://wa.me/5582999538090">+55 (82) 99953-8090</a>.</p>
       </div>
     </div>
   </section>
 
-  <!-- Dúvidas -->
+  <!-- 04 Dúvidas -->
   <section id="duvidas" tabindex="-1" aria-labelledby="t-faq">
-    <div class="wrap">
-      <p class="kicker">Dúvidas</p>
-      <h2 id="t-faq">Antes de começar</h2>
+    <div class="wrap faq-grid">
+      <div class="faq-head">
+        <p class="kicker"><span class="idx">04</span>Dúvidas</p>
+        <h2 id="t-faq">Antes de começar</h2>
+      </div>
       <div class="faq">
         <details open>
           <summary>Preciso instalar algum aplicativo?<span class="pm" aria-hidden="true"></span></summary>
@@ -372,10 +393,10 @@
     </div>
   </section>
 
-  <!-- Chamada final -->
+  <!-- Fechamento -->
   <section class="final" aria-labelledby="t-final">
     <div class="wrap">
-      <h2 id="t-final">Seu próximo gasto já pode ser anotado por mensagem.</h2>
+      <h2 id="t-final">Seu próximo gasto já pode ser anotado por <em class="serif mark">mensagem.<svg class="mark-line" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M3 8.5C52 3.5 128 2.5 197 6.5"/></svg></em></h2>
       <p>Assine o plano completo e organize finanças e compromissos pelo WhatsApp.</p>
       <div class="actions"><a class="btn" data-cta href="#planos">Assinar o Nexo</a></div>
     </div>
@@ -388,6 +409,7 @@
     <p>Suporte: <a href="https://wa.me/5582999538090">+55 (82) 99953-8090</a> · suportenexoassist@gmail.com</p>
     <p class="by">By <img src="assets/maxmidia.webp" alt="maXmidia" width="140" height="16" decoding="async"></p>
   </div>
+  <span class="wordmark" aria-hidden="true">Nexo</span>
 </footer>
 
 <!-- ===== Configuração: links de pagamento =====

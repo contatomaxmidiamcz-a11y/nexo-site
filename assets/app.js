@@ -1,10 +1,12 @@
-/* Nexo — comportamento da página (animações, demonstrações, planos, dúvidas). */
+/* Nexo — comportamento da página (versão premium): demonstrações, planos, dúvidas e navegação.
+   Movimento: uma sequência na abertura, explicações sob demanda, nada que siga o cursor. */
 (function(){
   const $ = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => [...r.querySelectorAll(s)];
   const RM = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)") : {matches:false};
   const reduced = () => RM.matches;
-  const EASE = "cubic-bezier(.22,.8,.24,1)";
+  const EASE = "cubic-bezier(.23,1,.32,1)";          // --ease-out
+  const EASE_DRAWER = "cubic-bezier(.32,.72,0,1)";   // --ease-drawer
   const wait = ms => new Promise(r => setTimeout(r, ms));
   /* --- Rolagem suave igual à da Pierre: Lenis 1.3.23, lerp 0.15 (desligada com movimento reduzido) --- */
   let lenis = null;
@@ -107,7 +109,9 @@
     });
   };
 
-  /* ===== 1. Primeira tela: o valor escrito vira o valor registrado ===== */
+  /* ===== 1. Abertura: a mensagem vira registro =====
+     Sequência única (vista uma vez por visita): a mensagem chega, o Nexo responde,
+     a ficha sai de trás do celular, a linha verde liga a resposta ao registro e o check fecha. */
   const H = new Runner(), hero = $("#hero-demo");
   const HL = "rgba(71,215,123,.42)", HL0 = "rgba(71,215,123,0)";
   async function playHero(){
@@ -116,32 +120,34 @@
     const amt = $("#h-amt"), val = $("#h-val"), ck = $("#h-ck");
     hero.classList.add("armed"); amt.classList.remove("hl");
     if (reduced()) { hero.classList.remove("armed"); amt.classList.add("hl"); return; }
-    H.enter(out, {duration:220});
-    await wait(240); if (!H.alive(t)) return;
-    H.anim(typing, [{opacity:0, transform:"scale(.9)"},{opacity:1, transform:"none"}], {duration:150});
-    await wait(480); if (!H.alive(t)) return;
+    H.enter(out, {duration:240});
+    await wait(300); if (!H.alive(t)) return;
+    H.anim(typing, [{opacity:0, transform:"scale(.92)"},{opacity:1, transform:"none"}], {duration:160});
+    await wait(560); if (!H.alive(t)) return;
     H.anim(typing, [{opacity:1},{opacity:0}], {duration:100});
-    H.enter(reply, {duration:200});
-    // A ficha aparece sem o valor; o espaço dele já está reservado
-    $$("[data-rv]", card).filter(el => el !== val).forEach((el, i) => H.enter(el, {duration:220, delay:i*40}));
-    await wait(200); if (!H.alive(t)) return;
-    // 1º destaque: o valor que a pessoa escreveu
-    H.anim(amt, [{backgroundColor:HL0},{backgroundColor:HL}], {duration:160});
-    await wait(170); if (!H.alive(t)) return;
-    // 2º destaque: o mesmo valor, agora na ficha (mesma cena no celular e no computador)
-    H.anim(val, [{opacity:0},{opacity:1}], {duration:180});
-    H.anim(val, [{backgroundColor:HL0, boxShadow:"0 0 0 0 " + HL0},{backgroundColor:HL, boxShadow:"0 0 0 5px " + HL, offset:.3},{backgroundColor:HL0, boxShadow:"0 0 0 5px " + HL0}], {duration:900, easing:"ease-out"});
-    await wait(150); if (!H.alive(t)) return;
-    await H.check(ck);
+    H.enter(reply, {duration:220});
+    await wait(160); if (!H.alive(t)) return;
+    // O valor escrito acende na mensagem…
+    H.anim(amt, [{backgroundColor:HL0},{backgroundColor:HL}], {duration:180});
+    await wait(140); if (!H.alive(t)) return;
+    // …e a ficha desliza de trás do celular (uma entrada só para o cartão inteiro)
+    const fromX = card.getBoundingClientRect().left < hero.querySelector(".hero-phone").getBoundingClientRect().left ? 56 : 0;
+    H.anim(card, [{opacity:0, transform:"translate(" + fromX + "px," + (fromX ? 8 : 28) + "px) scale(.96)"},{opacity:1, transform:"none"}], {duration:560, easing:EASE_DRAWER});
+    await wait(300); if (!H.alive(t)) return;
+    // Assinatura: linha da resposta até o registro, check desenhado e o mesmo valor destacado
+    const traced = H.trace(t, hero, reply, ck);
+    await wait(380); if (!H.alive(t)) return;
+    H.anim(val, [{backgroundColor:HL0, boxShadow:"0 0 0 0 " + HL0},{backgroundColor:HL, boxShadow:"0 0 0 6px " + HL, offset:.3},{backgroundColor:HL0, boxShadow:"0 0 0 6px " + HL0}], {duration:900, easing:EASE});
+    await traced;
   }
   $("#h-replay").addEventListener("click", playHero);
-  if ("IntersectionObserver" in window) {
-    // Começa quando a conversa e a ficha estão na tela
-    // Espera o bloco terminar de entrar (abertura em cascata) antes de tocar a cena
-    const entrance = () => Promise.all((hero.getAnimations ? hero.getAnimations() : []).filter(a => a.animationName === "nexoFadeUp").map(a => a.finished.catch(() => {})));
-    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); entrance().then(playHero); } }, {threshold:.8});
-    io.observe($("#h-result"));
-  } else playHero();
+  // Começa depois que o celular termina de entrar, quando o palco está na tela
+  const phoneIn = () => Promise.all(($(".hero-phone").getAnimations ? $(".hero-phone").getAnimations() : []).map(a => a.finished.catch(() => {})));
+  if (reduced() || !("IntersectionObserver" in window)) playHero();   // movimento reduzido: estado final na hora
+  else {
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); phoneIn().then(playHero); } }, {threshold:.4});
+    io.observe(hero);
+  }
 
   /* ===== 2. Demonstração ===== */
   const tick = '<svg viewBox="0 0 16 11" aria-label="lida"><path d="M11.1.6 4.9 6.9 2.4 4.4 1.3 5.5l3.6 3.6L12.2 1.7zM14.7.6 8.4 6.9l-.6-.6-1.1 1.1 1.7 1.7 7.4-7.4z"/></svg>';
@@ -408,44 +414,25 @@
       if (!d.open) {
         d.open = true;
         const h = a.scrollHeight;
-        d._an = a.animate([{height:"0px", opacity:0},{height:h + "px", opacity:1}], {duration:300, easing:"cubic-bezier(.45,0,.55,1)"});
+        d._an = a.animate([{height:"0px", opacity:0},{height:h + "px", opacity:1}], {duration:250, easing:EASE});
         d._an.onfinish = () => { d._an = null; };
       } else {
         const h = a.offsetHeight;
-        d._an = a.animate([{height:h + "px", opacity:1},{height:"0px", opacity:0}], {duration:260, easing:"cubic-bezier(.45,0,.55,1)"});
+        d._an = a.animate([{height:h + "px", opacity:1},{height:"0px", opacity:0}], {duration:200, easing:EASE});
         d._an.onfinish = () => { d.open = false; d._an = null; };
       }
     });
   });
 
-  /* ===== Site reativo ===== */
-  const fine = window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches;
-
-  // Entrada dos blocos ao rolar
-  const groups = [
-    ["section:not(.hero) .kicker", ""], ["section:not(.hero) h2", ""], [".sec-lead", ""], [".demo-head .badge", ""],
-    [".tabs", ""], [".panel", "scale"], [".feature:not(.rev) .shot", "left"], [".feature.rev .shot", "right"],
-    [".feature > div", ""], [".phone-figure", ""], [".more > div", "", 50], [".plan", "scale"], [".faq details", "", 40],
-    [".final p", ""], [".final .actions", ""]
-  ];
-  groups.forEach(([sel, kind, step]) => $$(sel).forEach((el, i) => {
-    el.setAttribute("data-reveal", kind || "");
-    if (step) el.style.setProperty("--d", (i * step) + "ms");
-  }));
-  const revealIO = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add("in"); revealIO.unobserve(e.target); }
-  }), {threshold:.12, rootMargin:"0px 0px -6% 0px"}) : null;
-  $$("[data-reveal]").forEach(el => revealIO ? revealIO.observe(el) : el.classList.add("in"));
-
-  // Cabeçalho: barra de progresso, modo compacto e seção ativa
-  const top = $("#top"), prog = $("#progress");
+  /* ===== Navegação ===== */
+  // Cabeçalho: recolhe ao descer, volta ao subir; marca a seção ativa
+  const top = $("#top");
   let ticking = false;
   let lastY = scrollY, navLock = false;   // navLock: rolagem feita pelos links do próprio site
   function onScroll(){
     if (ticking) return; ticking = true;
     requestAnimationFrame(() => {
-      const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
-      prog.style.transform = "scaleX(" + (max > 0 ? y / max : 0) + ")";
+      const y = scrollY;
       top.classList.toggle("scrolled", y > 24);
       // Recolhe ao rolar para baixo; volta ao rolar para cima, no topo ou durante a navegação pelos links
       if (navLock || y < 120 || reduced()) { top.classList.remove("hide"); lastY = y; }
@@ -530,38 +517,22 @@
     if (el.matches("section")) el.focus({preventScroll:true});
   });
 
-  // Reações ao ponteiro (apenas mouse/trackpad e sem movimento reduzido)
-  if (fine && !reduced()) {
-    const heroEl = $(".hero");
-    heroEl.addEventListener("pointermove", e => {
-      const r = heroEl.getBoundingClientRect();
-      heroEl.style.setProperty("--mx", (e.clientX - r.left) + "px");
-      heroEl.style.setProperty("--my", (e.clientY - r.top) + "px");
+  // Faixa tipográfica: cada palavra recebe sua posição (0–1) para acender com a rolagem (só onde o navegador suporta)
+  const st = $("#statement");
+  if (st && window.CSS && CSS.supports && CSS.supports("animation-timeline: view()") && !reduced()) {
+    const walk = node => [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(w => {
+          if (!w) return;
+          if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); return; }
+          const sp = document.createElement("span"); sp.className = "w"; sp.textContent = w; frag.appendChild(sp);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1) walk(n);
     });
-    $$(".btn").forEach(b => {
-      b.addEventListener("pointermove", e => {
-        const r = b.getBoundingClientRect();
-        b.style.setProperty("--tx", ((e.clientX - r.left - r.width/2) * .12).toFixed(1) + "px");
-        b.style.setProperty("--ty", ((e.clientY - r.top - r.height/2) * .25).toFixed(1) + "px");
-      });
-      b.addEventListener("pointerleave", () => { b.style.removeProperty("--tx"); b.style.removeProperty("--ty"); });
-    });
-    $$(".tilt").forEach(el => {
-      el.addEventListener("pointermove", e => {
-        const r = el.getBoundingClientRect(), x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
-        el.classList.add("moving");
-        el.style.setProperty("--ry", (x * 4).toFixed(2) + "deg");
-        el.style.setProperty("--rx", (-y * 3).toFixed(2) + "deg");
-      });
-      el.addEventListener("pointerleave", () => { el.classList.remove("moving"); el.style.removeProperty("--rx"); el.style.removeProperty("--ry"); });
-    });
-    $$(".spot, .more > div").forEach(el => {
-      el.classList.add("spot");
-      el.addEventListener("pointermove", e => {
-        const r = el.getBoundingClientRect();
-        el.style.setProperty("--sx", (e.clientX - r.left) + "px");
-        el.style.setProperty("--sy", (e.clientY - r.top) + "px");
-      });
-    });
+    walk(st);
+    const ws = $$(".w", st);
+    ws.forEach((w, k) => w.style.setProperty("--p", (k / Math.max(1, ws.length - 1)).toFixed(3)));
   }
 })();
